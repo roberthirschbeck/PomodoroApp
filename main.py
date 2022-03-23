@@ -7,24 +7,50 @@ RED = "#e7305b"
 GREEN = "#9bdeac"
 YELLOW = "#f7f5dd"
 FONT_NAME = "Courier"
-WORK_MIN = 25
-SHORT_BREAK_MIN = 5
-LONG_BREAK_MIN = 20
+# WORK_MIN = 25
+# SHORT_BREAK_MIN = 5
+# LONG_BREAK_MIN = 20
+WORK_MIN = 1
+SHORT_BREAK_MIN = 2
+LONG_BREAK_MIN = 3
 
-# ---------------------------- TIMER RESET ------------------------------- # 
+reps = 1
+timer = None
+
+
+# ---------------------------- TIMER RESET ------------------------------- #
+
+def reset_timer():
+    window.after_cancel(timer)
+    #timer_text 00:00
+
+    #title_lable Timer
+    #reset_check mark
 
 # ---------------------------- TIMER MECHANISM ------------------------------- #
 
 def start_timer():
+    global reps
+    if reps % 2 != 0:
+        timer = WORK_MIN * 60
+        welcome_label.config(text="Work", fg=GREEN)
+        reps += 1
+    elif reps % 2 == 0 and reps <= 4:
+        timer = SHORT_BREAK_MIN * 60
+        welcome_label.config(text="Short Break", fg=PINK)
+        reps += 1
+    elif reps == 8:
+        timer = LONG_BREAK_MIN * 60
+        welcome_label.config(text="Long Break", fg=RED)
+        reps = 0
 
-
-    count_down(5 * 60)
+    count_down(timer)
     # count_down(15)
-    #Hello World
+    # Hello World
+
 
 # ---------------------------- COUNTDOWN MECHANISM ------------------------------- #
 def count_down(count):
-
     count_min = math.floor(count / 60)
     count_sec = count % 60
 
@@ -33,7 +59,17 @@ def count_down(count):
 
     canvas.itemconfig(timer_text, text=f"{count_min}:{count_sec}")
     if count > 0:
-        window.after(1000, count_down, count - 1)
+        global timer
+        timer = window.after(1000, count_down, count - 1)
+    else:
+        start_timer()
+        if reps == 2:
+            check_label.config(text="✔")
+        elif reps == 4:
+            check_label.config(text="✔✔")
+        elif reps == 6:
+            check_label.config(text="✔✔✔")
+
 
 # ---------------------------- UI SETUP ------------------------------- #
 
@@ -44,7 +80,7 @@ window.config(padx=100, pady=50, bg=YELLOW)
 welcome_label = Label(text="Timer", fg=GREEN, bg=YELLOW, font=("Courier", 40, "bold"))
 welcome_label.grid(row=0, column=1)
 
-check_label = Label(text="✔", bg=YELLOW, fg=GREEN, font=("Courier", 15, "normal"))
+check_label = Label(text="", bg=YELLOW, fg=GREEN, font=("Courier", 15, "normal"))
 check_label.grid(row=3, column=1)
 
 tomato_img = PhotoImage(file="tomato.png")
@@ -57,7 +93,7 @@ canvas.grid(row=1, column=1)
 start_button = Button(text="Start", command=start_timer)
 start_button.grid(row=2, column=0)
 
-reset_button = Button(text="Reset")
+reset_button = Button(text="Reset", command=reset_timer)
 reset_button.grid(row=2, column=2)
 
 window.mainloop()
