@@ -10,9 +10,9 @@ FONT_NAME = "Courier"
 # WORK_MIN = 25
 # SHORT_BREAK_MIN = 5
 # LONG_BREAK_MIN = 20
-WORK_MIN = 1
-SHORT_BREAK_MIN = 2
-LONG_BREAK_MIN = 3
+WORK_MIN = 25
+SHORT_BREAK_MIN = 5
+LONG_BREAK_MIN = 20
 
 reps = 1
 timer = None
@@ -21,11 +21,17 @@ timer = None
 # ---------------------------- TIMER RESET ------------------------------- #
 
 def reset_timer():
+    global reps
     window.after_cancel(timer)
-    #timer_text 00:00
+    #window.after_cancel(timer_text)
+    canvas.itemconfig(timer_text, text=f"00:00")
+    check_label.config(text="")
+    welcome_label.config(text="Timer")
+    reps = 1
+
 
     #title_lable Timer
-    #reset_check mark
+
 
 # ---------------------------- TIMER MECHANISM ------------------------------- #
 
